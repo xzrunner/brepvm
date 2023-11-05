@@ -1,0 +1,101 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="bytecodes">
+      <UniqueIdentifier>{f959b1cf-a58c-4dc2-ab4d-36bf1681e54e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="dataset">
+      <UniqueIdentifier>{28e3f003-4d61-49b6-af65-d42e025d2df4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="nodes">
+      <UniqueIdentifier>{fb292a60-14ac-4707-8b84-9a2df45ca623}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="opcodes">
+      <UniqueIdentifier>{88229f52-c2fe-4a19-8c1f-d84bb5db35db}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="value">
+      <UniqueIdentifier>{bfe5e813-1a0b-4194-93bb-36c98be3bb34}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\source\Bytecodes.cpp">
+      <Filter>bytecodes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\CodesBuilder.cpp">
+      <Filter>bytecodes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\OpFieldMap.cpp">
+      <Filter>dataset</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\Compiler.cpp">
+      <Filter>nodes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\Decompiler.cpp">
+      <Filter>nodes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\Optimizer.cpp">
+      <Filter>nodes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\geo_opcodes.cpp">
+      <Filter>opcodes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\math_opcodes.cpp">
+      <Filter>opcodes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\stl_opcodes.cpp">
+      <Filter>opcodes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\ValueCache.cpp">
+      <Filter>value</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\VMHelper.cpp">
+      <Filter>value</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\VM.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\include\brepvm\Bytecodes.h">
+      <Filter>bytecodes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\brepvm\CodesBuilder.h">
+      <Filter>bytecodes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\brepvm\CodeBlock.h">
+      <Filter>dataset</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\brepvm\OpFieldMap.h">
+      <Filter>dataset</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\brepvm\OpFieldType.h">
+      <Filter>dataset</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\brepvm\Compiler.h">
+      <Filter>nodes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\brepvm\Decompiler.h">
+      <Filter>nodes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\brepvm\Optimizer.h">
+      <Filter>nodes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\brepvm\geo_opcodes.h">
+      <Filter>opcodes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\brepvm\math_opcodes.h">
+      <Filter>opcodes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\brepvm\stl_opcodes.h">
+      <Filter>opcodes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\brepvm\ValueCache.h">
+      <Filter>value</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\brepvm\ValueType.h">
+      <Filter>value</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\brepvm\VMHelper.h">
+      <Filter>value</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\brepvm\VM.h" />
+  </ItemGroup>
+</Project>
