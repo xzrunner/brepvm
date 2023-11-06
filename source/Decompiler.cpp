@@ -35,7 +35,7 @@ void WriteData(std::vector<uint8_t>& codes, int ip, const T& val)
 }
 
 template <class T>
-inline void hash_combine(std::size_t& seed, const T& v)
+inline void hash_combine(uint32_t& seed, const T& v)
 {
 	std::hash<T> hasher;
 	seed ^= hasher(v) + 0x9e3779b9 + (seed << 6) + (seed >> 2);
@@ -196,9 +196,9 @@ void Decompiler::Print(int begin, int end)
 	printf("\n");
 }
 
-size_t Decompiler::Hash(int begin, int end)
+uint32_t Decompiler::Hash(int begin, int end)
 {
-	size_t hash = 0;
+	uint32_t hash = 0;
 
 	auto& codes = m_codes->GetCode();
 	if (begin < 0 || begin >= codes.size() || begin >= end) {
@@ -543,7 +543,7 @@ void Decompiler::JumpLabelRelocate(const std::vector<CodeBlock>& rm_blocks)
 							// rm block
 							new_pos -= (b.end - b.begin);
 							// add OP_POLY_COPY_FROM_MEM
-							new_pos += sizeof(uint8_t) * 3;
+							new_pos += (sizeof(uint8_t) + sizeof(uint8_t) + sizeof(uint32_t));
 						}
 					}
 
@@ -552,6 +552,66 @@ void Decompiler::JumpLabelRelocate(const std::vector<CodeBlock>& rm_blocks)
 					}
 
 					ip += sizeof(int);
+					++i;
+				}
+			}
+				break;
+			case OpFieldType::Reg:
+				ip += sizeof(uint8_t);
+				break;
+			case OpFieldType::Double:
+				ip += sizeof(double);
+				break;
+			case OpFieldType::Float:
+				ip += sizeof(float);
+				break;
+			case OpFieldType::Int:
+				ip += sizeof(int);
+				break;
+			case OpFieldType::Bool:
+				ip += sizeof(bool);
+				break;
+			default:
+				throw std::runtime_error("Unknown type!");
+			}
+		}
+	}
+}
+
+void Decompiler::ReplaceHash(uint32_t old_hash, uint32_t new_hash)
+{
+	auto& codes = m_codes->GetCode();
+
+	int ip = 0;
+	while (ip < codes.size())
+	{
+		auto fields = m_ops->Query(codes[ip]);
+		if (!fields) {
+			throw std::runtime_error("Error opcode!");
+		}
+
+		for (size_t i = 0, n = fields->size(); i < n; ++i)
+		{
+			switch ((*fields)[i])
+			{
+			case OpFieldType::OpType:
+			{
+				int type = codes[ip];
+				ip += sizeof(uint8_t);
+
+				if (type == brepvm::OP_POLY_COPY_FROM_MEM)
+				{
+					assert((*fields)[i + 1] == OpFieldType::Reg);
+					ip += sizeof(uint8_t);
+					++i;
+
+					assert((*fields)[i + 1] == OpFieldType::Int);
+					int hash = ReadData<int>(codes, ip);
+					if (hash == old_hash) {
+						WriteData<int>(const_cast<std::vector<uint8_t>&>(codes), ip, new_hash);
+					}
+
+					ip += sizeof(uint32_t);
 					++i;
 				}
 			}

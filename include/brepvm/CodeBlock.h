@@ -1,11 +1,13 @@
 #pragma once
 
+#include <stdint.h>
+
 namespace brepvm
 {
 
 struct CodeBlock
 {
-	size_t hash;
+	uint32_t hash;
 
 	int begin;
 	int end;

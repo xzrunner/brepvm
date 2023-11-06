@@ -1,8 +1,8 @@
 #pragma once
 
-#include <easyvm/Value.h>
+#include <map>
 
-#include <vector>
+namespace evm { class Value; }
 
 namespace brepvm
 {
@@ -10,13 +10,11 @@ namespace brepvm
 class ValueCache
 {
 public:
-	void Resize(size_t size);
-
-	void SetValue(int idx, const evm::Value& val);
-	const evm::Value& GetValue(int idx) const;
+	bool Insert(size_t key, const evm::Value& val);
+	const evm::Value* Query(size_t key) const;
 
 private:
-	std::vector<evm::Value> m_vals;
+	std::map<size_t, evm::Value> m_cache;
 
 }; // ValueCache
 

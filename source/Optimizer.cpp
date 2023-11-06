@@ -106,18 +106,23 @@ void Optimizer::CacheBlocks() const
     auto& old_codes = m_old_codes->GetCode();
 
     auto cache = VM::Instance()->GetCache();
-    cache->Resize(blocks.size());
-
     if (blocks.size() >= 2)
     {
         std::vector<std::thread> ts;
         for (int i = 0; i < blocks.size(); ++i)
         {
+            auto val = cache->Query(blocks[i].front().hash);
+            if (val) {
+                continue;
+            }
+
             ts.push_back(std::thread([](const CodeBlock& b, int i, const std::vector<uint8_t>& old_codes, const std::shared_ptr<ValueCache>& cache)
             {
                 auto vm = VM::Instance()->CreateVM(old_codes);
                 vm->Run(b.begin, b.end);
-                cache->SetValue(i, vm->GetRegister(b.reg));
+
+                auto& val = vm->GetRegister(b.reg);
+                cache->Insert(b.hash, val);
 
             }, blocks[i].front(), i, old_codes, cache));
         }
@@ -130,9 +135,14 @@ void Optimizer::CacheBlocks() const
         auto vm = VM::Instance()->CreateVM(old_codes);
         for (int i = 0; i < blocks.size(); ++i)
         {
+            auto val = cache->Query(blocks[i].front().hash);
+            if (val) {
+                continue;
+            }
+
             auto& b = blocks[i].front();
             vm->Run(b.begin, b.end);
-            cache->SetValue(i, vm->GetRegister(b.reg));
+            cache->Insert(blocks[i].front().hash, vm->GetRegister(b.reg));
         }
     }
 
@@ -179,11 +189,12 @@ void Optimizer::CacheBlocks() const
 
         new_codes.push_back(OP_POLY_COPY_FROM_MEM);
         new_codes.push_back(block.reg);
-        new_codes.push_back(block.group);
+        auto key = reinterpret_cast<const char*>(&block.hash);
+        std::copy(key, key + sizeof(block.hash), std::back_inserter(new_codes));
     }
 
     VM::Instance()->GetOpFields()->Add(OP_POLY_COPY_FROM_MEM, 
-        { OpFieldType::OpType, OpFieldType::Reg, OpFieldType::Reg }
+        { OpFieldType::OpType, OpFieldType::Reg, OpFieldType::Int }
     );
 
     std::copy(fixed_old_codes.begin() + curr_pos, fixed_old_codes.end(), std::back_inserter(new_codes));
@@ -236,6 +247,28 @@ void Optimizer::FlushCache()
         return;
     }
 
+    Decompiler old_dc(m_old_codes, VM::Instance()->GetOpFields());
+    Decompiler new_dc(m_new_codes, VM::Instance()->GetOpFields());
+
+    // update hash
+    for (size_t i = 0, n = m_cached_blocks.size(); i < n; ++i)
+    {
+        for (auto& b : m_cached_blocks[i])
+        {
+            if (!b.dirty) {
+                continue;
+            }
+
+            uint32_t old_hash = b.hash;
+            uint32_t new_hash = old_dc.Hash(b.begin, b.end);
+
+            b.hash = new_hash;
+
+            new_dc.ReplaceHash(old_hash, new_hash);
+        }
+    }
+
+    auto cache = VM::Instance()->GetCache();
     if (num >= 2)
     {
         std::vector<std::thread> ts;
@@ -248,6 +281,11 @@ void Optimizer::FlushCache()
                     continue;
                 }
 
+                auto val = cache->Query(b.hash);
+                if (val) {
+                    continue;
+                }
+
                 ts.push_back(std::thread([](const CodeBlock& b, size_t i, const std::vector<uint8_t>& old_codes)
                 {
                     auto vm = VM::Instance()->CreateVM(old_codes);
@@ -255,7 +293,8 @@ void Optimizer::FlushCache()
                     vm->Run(b.begin, b.end);
 
                     auto cache = VM::Instance()->GetCache();
-                    cache->SetValue(static_cast<int>(i), vm->GetRegister(b.reg));
+                    cache->Insert(b.hash, vm->GetRegister(b.reg));
+
                 }, b, i, m_old_codes->GetCode()));
 
                 b.dirty = false;
@@ -279,8 +318,13 @@ void Optimizer::FlushCache()
                     continue;
                 }
 
-                vm->Run(b.begin, b.end);                
-                cache->SetValue(static_cast<int>(i), vm->GetRegister(b.reg));
+                auto val = cache->Query(b.hash);
+                if (val) {
+                    continue;
+                }
+
+                vm->Run(b.begin, b.end);
+                cache->Insert(b.hash, vm->GetRegister(b.reg));
 
                 b.dirty = false;
             }
@@ -300,7 +344,7 @@ int Optimizer::Relocate(int pos) const
                 // del code block
                 offset += b.end - b.begin;
                 // add OP_POLY_COPY_FROM_MEM
-                offset -= 3;
+                offset -= (sizeof(uint8_t) + sizeof(uint8_t) + sizeof(uint32_t));
             }
         }
     }

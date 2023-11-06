@@ -20,12 +20,14 @@ public:
 
 	void Print(int begin, int end);
 
-	size_t Hash(int begin, int end);
+	uint32_t Hash(int begin, int end);
 
 	void JumpLabelEncode();
 	void JumpLabelDecode();
 
 	void JumpLabelRelocate(const std::vector<CodeBlock>& rm_blocks);
+
+	void ReplaceHash(uint32_t old_hash, uint32_t new_hash);
 
 private:
 	std::shared_ptr<Bytecodes> m_codes;

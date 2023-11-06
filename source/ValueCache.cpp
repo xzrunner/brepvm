@@ -1,30 +1,23 @@
 #include "brepvm/ValueCache.h"
 
-#include <stdexcept>
+#include <easyvm/Value.h>
 
 namespace brepvm
 {
 
-void ValueCache::Resize(size_t size)
+bool ValueCache::Insert(size_t key, const evm::Value& val)
 {
-	m_vals.resize(size);
+    auto state = m_cache.insert({ key, val });
+    return state.second;
 }
 
-void ValueCache::SetValue(int idx, const evm::Value& val)
+const evm::Value* ValueCache::Query(size_t key) const
 {
-    if (idx < 0 || idx >= m_vals.size()) {
-        throw std::runtime_error("Error idx!");
+    auto itr = m_cache.find(key);
+    if (itr != m_cache.end()) {
+        return &itr->second;
     } else {
-        m_vals[idx] = val;
-    }
-}
-
-const evm::Value& ValueCache::GetValue(int idx) const
-{
-    if (idx < 0 || idx >= m_vals.size()) {
-        throw std::runtime_error("Error idx!");
-    } else {
-        return m_vals[idx];
+        return nullptr;
     }
 }
 
