@@ -146,8 +146,8 @@ void Decompiler::Print(int begin, int end)
 	while (ip < codes.size() && ip < end)
 	{
 		auto fields = m_ops->Query(codes[ip]);
-		if (!fields) {
-			throw std::runtime_error("Decompile fail!");
+		if (!fields || fields->empty()) {
+			throw std::runtime_error("Error opcode!");
 		}
 
 		printf("%d: ", ip);
@@ -212,8 +212,8 @@ uint32_t Decompiler::Hash(int begin, int end)
 	while (ip < codes.size() && ip < end)
 	{
 		auto fields = m_ops->Query(codes[ip]);
-		if (!fields) {
-			throw std::runtime_error("Hash fail!");
+		if (!fields || fields->empty()) {
+			throw std::runtime_error("Error opcode!");
 		}
 
 		for (size_t i = 0, n = fields->size(); i < n; ++i)
@@ -293,7 +293,7 @@ void Decompiler::JumpLabelEncode()
 	while (ip < codes.size())
 	{
 		auto fields = m_ops->Query(codes[ip]);
-		if (!fields) {
+		if (!fields || fields->empty()) {
 			throw std::runtime_error("Error opcode!");
 		}
 
@@ -387,7 +387,7 @@ void Decompiler::JumpLabelDecode()
 		}
 
 		auto fields = m_ops->Query(codes[ip]);
-		if (!fields) {
+		if (!fields || fields->empty()) {
 			throw std::runtime_error("Error opcode!");
 		}
 
@@ -435,7 +435,7 @@ void Decompiler::JumpLabelDecode()
 		}
 
 		auto fields = m_ops->Query(codes[ip]);
-		if (!fields) {
+		if (!fields || fields->empty()) {
 			throw std::runtime_error("Error opcode!");
 		}
 
@@ -508,7 +508,7 @@ void Decompiler::JumpLabelRelocate(const std::vector<CodeBlock>& rm_blocks)
 	while (ip < codes.size())
 	{
 		auto fields = m_ops->Query(codes[ip]);
-		if (!fields) {
+		if (!fields || fields->empty()) {
 			throw std::runtime_error("Error opcode!");
 		}
 
@@ -586,7 +586,7 @@ void Decompiler::ReplaceHash(uint32_t old_hash, uint32_t new_hash)
 	while (ip < codes.size())
 	{
 		auto fields = m_ops->Query(codes[ip]);
-		if (!fields) {
+		if (!fields || fields->empty()) {
 			throw std::runtime_error("Error opcode!");
 		}
 
