@@ -1,8 +1,8 @@
 #pragma once
 
-#include <map>
+#include <easyvm/Value.h>
 
-namespace evm { class Value; }
+#include <map>
 
 namespace brepvm
 {
@@ -13,8 +13,19 @@ public:
 	bool Insert(size_t key, const evm::Value& val);
 	const evm::Value* Query(size_t key) const;
 
+	void Update();
+
 private:
-	std::map<size_t, evm::Value> m_cache;
+	struct Item
+	{
+		Item(const evm::Value& v) : val(v) {}
+
+		mutable int time = 0;
+		evm::Value val;
+	};
+
+private:
+	std::map<size_t, Item> m_cache;
 
 }; // ValueCache
 
