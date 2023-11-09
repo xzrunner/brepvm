@@ -21,7 +21,7 @@ T ReadData(const std::vector<uint8_t>& codes, int ip)
 	T ret = 0;
 
 	const int sz = sizeof(T);
-	if (ip >= 0 && ip + sz < codes.size()) {
+	if (ip >= 0 && ip + sz <= codes.size()) {
 		memcpy(&ret, &codes[ip], sz);
 	}
 
