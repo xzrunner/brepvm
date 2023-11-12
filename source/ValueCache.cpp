@@ -31,8 +31,6 @@ void ValueCache::Update()
         return;
     }
 
-    printf("++ %d\n", m_cache.size());
-
     for (auto& itr : m_cache) {
         ++itr.second.time;
     }
