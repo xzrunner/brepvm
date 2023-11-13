@@ -65,6 +65,8 @@ Decompiler::Decompiler(const std::shared_ptr<Bytecodes>& codes,
 		m_op_names.resize(MAX_OP_NUM);
 
 		m_op_names[evm::OP_EXIT]			= "exit";
+		m_op_names[evm::OP_SET_NIL]			= "set_nil";
+		m_op_names[evm::OP_IS_NIL]			= "is_nil";
 		m_op_names[evm::OP_MOVE_VAL]        = "move";
 		m_op_names[evm::OP_BOOL_STORE]		= "bool_store";
 		m_op_names[evm::OP_BOOL_PRINT]		= "bool_print";
@@ -73,6 +75,7 @@ Decompiler::Decompiler(const std::shared_ptr<Bytecodes>& codes,
 		m_op_names[evm::OP_NUMBER_STORE]	= "num_store";
 		m_op_names[evm::OP_NUMBER_PRINT]	= "num_print";
 		m_op_names[evm::OP_NUMBER_NEGATE]	= "num_negate";
+		m_op_names[evm::OP_SQRT]			= "num_sqrt";
 		m_op_names[evm::OP_ADD]				= "num_add";
 		m_op_names[evm::OP_SUB]				= "num_sub";
 		m_op_names[evm::OP_MUL]				= "num_mul";
