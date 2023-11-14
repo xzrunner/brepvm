@@ -25,7 +25,10 @@ public:
 	auto GetNewCodes() const { return m_new_codes; }
 
 private:
-	std::vector<std::vector<CodeBlock>> CalcBlocks() const;
+	std::vector<std::vector<CodeBlock>> CalcCacheBlocks() const;
+	std::vector<CodeBlock> CalcRemoveBlocks(
+		const std::vector<std::vector<CodeBlock>>& cache_blocks) const;
+
 	void CacheBlocks() const;
 
 	int Relocate(int pos) const;

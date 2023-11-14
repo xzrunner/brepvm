@@ -29,7 +29,7 @@ void Optimizer::Optimize()
 }
 
 std::vector<std::vector<CodeBlock>> 
-Optimizer::CalcBlocks() const
+Optimizer::CalcCacheBlocks() const
 {
     auto& _blocks = m_old_codes->GetCodeBlocks();
 
@@ -88,9 +88,65 @@ Optimizer::CalcBlocks() const
     return blocks;
 }
 
+std::vector<CodeBlock> 
+Optimizer::CalcRemoveBlocks(const std::vector<std::vector<CodeBlock>>& cache_blocks) const
+{
+    std::vector<CodeBlock> sorted;
+    for (auto& bs : cache_blocks)
+    {
+        for (auto& b : bs) 
+        {
+            bool is_exist = false;
+            for (auto& cb : sorted) 
+            {
+                if (b.begin >= cb.begin && b.end <= cb.end) 
+                {
+                    is_exist = true;
+                    break;
+                }
+            }
+
+            if (!is_exist)
+            sorted.push_back(b);
+        }
+    }
+    std::sort(sorted.begin(), sorted.end(), 
+        [](const CodeBlock& a, const CodeBlock& b) 
+    {
+        if (a.begin == b.begin)
+        {
+            return a.end - a.begin > b.end - b.begin;
+        }
+        else
+        {
+            return a.begin < b.begin;
+        }
+    });
+
+    std::vector<CodeBlock> rm_blocks;
+    for (auto& new_b : sorted)
+    {
+        bool is_exist = false;
+        for (auto& old_b : rm_blocks)
+        {
+            if (new_b.begin >= old_b.begin && new_b.end <= old_b.end)
+            {
+                is_exist = true;
+                break;
+            }
+        }
+
+        if (!is_exist) { 
+            rm_blocks.push_back(new_b);
+        }
+    }
+
+    return rm_blocks;
+}
+
 void Optimizer::CacheBlocks() const
 {
-    auto blocks = CalcBlocks();
+    auto blocks = CalcCacheBlocks();
     if (blocks.empty()) {
         return;
     }
@@ -146,39 +202,22 @@ void Optimizer::CacheBlocks() const
         }
     }
 
-    std::vector<CodeBlock> sorted;
-    for (auto& bs : blocks) {
-        for (auto& b : bs) {
-            sorted.push_back(b);
-        }
-    }
-    std::sort(sorted.begin(), sorted.end(), 
-        [](const CodeBlock& a, const CodeBlock& b) 
-    {
-        if (a.begin == b.begin)
-        {
-            return a.end - a.begin > b.end - b.begin;
-        }
-        else
-        {
-            return a.begin < b.begin;
-        }
-    });
+    auto rm_blocks = CalcRemoveBlocks(blocks);
 
     auto tmp_codes = std::make_shared<Bytecodes>();
     tmp_codes->SetCode(old_codes);
 
     Decompiler dc(tmp_codes, VM::Instance()->GetOpFields());
-    dc.JumpLabelRelocate(sorted);
+    dc.JumpLabelRelocate(rm_blocks);
 
     auto& fixed_old_codes = tmp_codes->GetCode();
 
     std::vector<uint8_t> new_codes;
 
     int curr_pos = 0;
-    for (size_t i = 0, n = sorted.size(); i < n; ++i)
+    for (size_t i = 0, n = rm_blocks.size(); i < n; ++i)
     {
-        auto& block = sorted[i];
+        auto& block = rm_blocks[i];
         if (block.begin < curr_pos) 
         {
             assert(block.end <= curr_pos);
