@@ -27,6 +27,7 @@
     <ClCompile Include="..\..\..\source\math_opcodes.cpp" />
     <ClCompile Include="..\..\..\source\OpFieldMap.cpp" />
     <ClCompile Include="..\..\..\source\Optimizer.cpp" />
+    <ClCompile Include="..\..\..\source\DelComments.cpp" />
     <ClCompile Include="..\..\..\source\stl_opcodes.cpp" />
     <ClCompile Include="..\..\..\source\ValueCache.cpp" />
     <ClCompile Include="..\..\..\source\VM.cpp" />
@@ -43,6 +44,7 @@
     <ClInclude Include="..\..\..\include\brepvm\OpFieldMap.h" />
     <ClInclude Include="..\..\..\include\brepvm\OpFieldType.h" />
     <ClInclude Include="..\..\..\include\brepvm\Optimizer.h" />
+    <ClInclude Include="..\..\..\include\brepvm\DelComments.h" />
     <ClInclude Include="..\..\..\include\brepvm\stl_opcodes.h" />
     <ClInclude Include="..\..\..\include\brepvm\ValueCache.h" />
     <ClInclude Include="..\..\..\include\brepvm\ValueType.h" />

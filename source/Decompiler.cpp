@@ -586,6 +586,26 @@ void Decompiler::ReplaceHash(uint32_t old_hash, uint32_t new_hash)
 	}
 }
 
+size_t Decompiler::CalcOpSize(int ip) const
+{
+	auto& codes = m_codes->GetCode();
+	if (ip < 0 || ip >= codes.size()) {
+		return 0;
+	}
+
+	auto fields = m_ops->Query(codes[ip]);
+	if (!fields || fields->empty()) {
+		throw std::runtime_error("Error opcode!");
+	}
+
+	int begin = ip;
+	for (auto type : *fields) {
+		AdvancePtr(type, ip);
+	}
+
+	return ip - begin;
+}
+
 void Decompiler::AdvancePtr(const OpFieldType& type, int& ip) const
 {
 	switch (type)

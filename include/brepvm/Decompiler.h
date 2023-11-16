@@ -30,6 +30,8 @@ public:
 
 	void ReplaceHash(uint32_t old_hash, uint32_t new_hash);
 
+	size_t CalcOpSize(int ip) const;
+
 private:
 	void AdvancePtr(const OpFieldType& type, int& ip) const;
 

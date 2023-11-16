@@ -16,6 +16,9 @@
     <Filter Include="value">
       <UniqueIdentifier>{bfe5e813-1a0b-4194-93bb-36c98be3bb34}</UniqueIdentifier>
     </Filter>
+    <Filter Include="optimize">
+      <UniqueIdentifier>{cfab4ef5-179f-4da3-b599-22a6a3fb2d4d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\source\Bytecodes.cpp">
@@ -52,6 +55,9 @@
       <Filter>value</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\source\VM.cpp" />
+    <ClCompile Include="..\..\..\source\DelComments.cpp">
+      <Filter>optimize</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\include\brepvm\Bytecodes.h">
@@ -97,5 +103,8 @@
       <Filter>value</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\include\brepvm\VM.h" />
+    <ClInclude Include="..\..\..\include\brepvm\DelComments.h">
+      <Filter>optimize</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
