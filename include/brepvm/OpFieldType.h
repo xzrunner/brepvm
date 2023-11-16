@@ -11,6 +11,7 @@ enum class OpFieldType
 	Float,
 	Int,
 	Bool,
+	String,
 };
 
 }

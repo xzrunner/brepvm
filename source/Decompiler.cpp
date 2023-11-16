@@ -65,6 +65,7 @@ Decompiler::Decompiler(const std::shared_ptr<Bytecodes>& codes,
 		m_op_names.resize(MAX_OP_NUM);
 
 		m_op_names[evm::OP_EXIT]			= "exit";
+		m_op_names[evm::OP_COMMENTS]		= "//";
 		m_op_names[evm::OP_SET_NIL]			= "set_nil";
 		m_op_names[evm::OP_IS_NIL]			= "is_nil";
 		m_op_names[evm::OP_MOVE_VAL]        = "move";
@@ -183,6 +184,15 @@ void Decompiler::Print(int begin, int end)
 				printf("%d", ReadData<bool>(codes, ip));
 				ip += sizeof(bool);
 				break;
+			case OpFieldType::String:
+			{
+				uint16_t len = ReadData<uint16_t>(codes, ip);
+				ip += sizeof(uint16_t);
+				for (int i = 0; i < len; ++i) {
+					printf("%c", codes[ip++]);
+				}
+			}
+				break;
 			default:
 				throw std::runtime_error("Unknown type!");
 			}
@@ -244,6 +254,17 @@ uint32_t Decompiler::Hash(int begin, int end)
 					ip += sizeof(int);
 					++i;
 				}
+				else if (type == evm::OP_COMMENTS)
+				{
+					assert((*fields)[i + 1] == OpFieldType::String);
+
+					uint16_t len = ReadData<uint16_t>(codes, ip);
+					ip += sizeof(uint16_t);
+
+					ip += len;
+
+					++i;
+				}
 			}
 				break;
 			case OpFieldType::Reg:
@@ -276,6 +297,17 @@ uint32_t Decompiler::Hash(int begin, int end)
 			case OpFieldType::Bool:
 				hash_combine(hash, ReadData<bool>(codes, ip));
 				ip += sizeof(bool);
+				break;
+			case OpFieldType::String:
+			{
+				uint16_t len = ReadData<uint16_t>(codes, ip);
+				ip += sizeof(uint16_t);
+				hash_combine(hash, len);
+
+				for (int i = 0; i < len; ++i) {
+					hash_combine(hash, codes[ip++]);
+				}
+			}
 				break;
 			default:
 				throw std::runtime_error("Unknown type!");

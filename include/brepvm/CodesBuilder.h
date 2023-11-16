@@ -25,6 +25,7 @@ public:
 	void WriteFloat(float f);
 	void WriteInt(int i);
 	void WriteBool(bool b);
+	void WriteString(const char* str);
 
 private:
 	std::shared_ptr<Bytecodes> m_codes;

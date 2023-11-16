@@ -66,4 +66,14 @@ void CodesBuilder::WriteBool(bool b)
 	m_op_fields.push_back(OpFieldType::Bool);
 }
 
+void CodesBuilder::WriteString(const char* str)
+{
+	uint16_t len = strlen(str);
+	m_codes->Write(reinterpret_cast<const char*>(&len), sizeof(uint16_t));
+
+	m_codes->Write(str, len);
+
+	m_op_fields.push_back(OpFieldType::String);
+}
+
 }
