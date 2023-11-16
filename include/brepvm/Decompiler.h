@@ -1,6 +1,7 @@
 #pragma once
 
 #include "CodeBlock.h"
+#include "OpFieldType.h"
 
 #include <memory>
 #include <vector>
@@ -28,6 +29,9 @@ public:
 	void JumpLabelRelocate(const std::vector<CodeBlock>& rm_blocks);
 
 	void ReplaceHash(uint32_t old_hash, uint32_t new_hash);
+
+private:
+	void AdvancePtr(const OpFieldType& type, int& ip) const;
 
 private:
 	std::shared_ptr<Bytecodes> m_codes;

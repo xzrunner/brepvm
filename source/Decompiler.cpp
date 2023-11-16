@@ -334,9 +334,8 @@ void Decompiler::JumpLabelEncode()
 
 		for (size_t i = 0, n = fields->size(); i < n; ++i)
 		{
-			switch ((*fields)[i])
-			{
-			case OpFieldType::OpType:
+			auto type = (*fields)[i];
+			if (type == OpFieldType::OpType)
 			{
 				int type = codes[ip];
 				ip += sizeof(uint8_t);
@@ -354,24 +353,9 @@ void Decompiler::JumpLabelEncode()
 					++i;
 				}
 			}
-				break;
-			case OpFieldType::Reg:
-				ip += sizeof(uint8_t);
-				break;
-			case OpFieldType::Double:
-				ip += sizeof(double);
-				break;
-			case OpFieldType::Float:
-				ip += sizeof(float);
-				break;
-			case OpFieldType::Int:
-				ip += sizeof(int);
-				break;
-			case OpFieldType::Bool:
-				ip += sizeof(bool);
-				break;
-			default:
-				throw std::runtime_error("Unknown type!");
+			else
+			{
+				AdvancePtr((*fields)[i], ip);
 			}
 		}
 	}
@@ -426,31 +410,8 @@ void Decompiler::JumpLabelDecode()
 			throw std::runtime_error("Error opcode!");
 		}
 
-		for (size_t i = 0, n = fields->size(); i < n; ++i)
-		{
-			switch ((*fields)[i])
-			{
-			case OpFieldType::OpType:
-				ip += sizeof(uint8_t);
-				break;
-			case OpFieldType::Reg:
-				ip += sizeof(uint8_t);
-				break;
-			case OpFieldType::Double:
-				ip += sizeof(double);
-				break;
-			case OpFieldType::Float:
-				ip += sizeof(float);
-				break;
-			case OpFieldType::Int:
-				ip += sizeof(int);
-				break;
-			case OpFieldType::Bool:
-				ip += sizeof(bool);
-				break;
-			default:
-				throw std::runtime_error("Unknown type!");
-			}
+		for (size_t i = 0, n = fields->size(); i < n; ++i) {
+			AdvancePtr((*fields)[i], ip);
 		}
 	}
 
@@ -476,9 +437,8 @@ void Decompiler::JumpLabelDecode()
 
 		for (size_t i = 0, n = fields->size(); i < n; ++i)
 		{
-			switch ((*fields)[i])
-			{
-			case OpFieldType::OpType:
+			auto type = (*fields)[i];
+			if (type == OpFieldType::OpType)
 			{
 				int type = codes[ip];
 				ip += sizeof(uint8_t);
@@ -497,24 +457,9 @@ void Decompiler::JumpLabelDecode()
 					++i;
 				}
 			}
-				break;
-			case OpFieldType::Reg:
-				ip += sizeof(uint8_t);
-				break;
-			case OpFieldType::Double:
-				ip += sizeof(double);
-				break;
-			case OpFieldType::Float:
-				ip += sizeof(float);
-				break;
-			case OpFieldType::Int:
-				ip += sizeof(int);
-				break;
-			case OpFieldType::Bool:
-				ip += sizeof(bool);
-				break;
-			default:
-				throw std::runtime_error("Unknown type!");
+			else
+			{
+				AdvancePtr(type, ip);
 			}
 		}
 	}
@@ -549,9 +494,8 @@ void Decompiler::JumpLabelRelocate(const std::vector<CodeBlock>& rm_blocks)
 
 		for (size_t i = 0, n = fields->size(); i < n; ++i)
 		{
-			switch ((*fields)[i])
-			{
-			case OpFieldType::OpType:
+			auto type = (*fields)[i];
+			if (type == OpFieldType::OpType)
 			{
 				int type = codes[ip];
 				ip += sizeof(uint8_t);
@@ -590,24 +534,9 @@ void Decompiler::JumpLabelRelocate(const std::vector<CodeBlock>& rm_blocks)
 					++i;
 				}
 			}
-				break;
-			case OpFieldType::Reg:
-				ip += sizeof(uint8_t);
-				break;
-			case OpFieldType::Double:
-				ip += sizeof(double);
-				break;
-			case OpFieldType::Float:
-				ip += sizeof(float);
-				break;
-			case OpFieldType::Int:
-				ip += sizeof(int);
-				break;
-			case OpFieldType::Bool:
-				ip += sizeof(bool);
-				break;
-			default:
-				throw std::runtime_error("Unknown type!");
+			else
+			{
+				AdvancePtr(type, ip);
 			}
 		}
 	}
@@ -627,9 +556,8 @@ void Decompiler::ReplaceHash(uint32_t old_hash, uint32_t new_hash)
 
 		for (size_t i = 0, n = fields->size(); i < n; ++i)
 		{
-			switch ((*fields)[i])
-			{
-			case OpFieldType::OpType:
+			auto type = (*fields)[i];
+			if (type == OpFieldType::OpType)
 			{
 				int type = codes[ip];
 				ip += sizeof(uint8_t);
@@ -650,26 +578,45 @@ void Decompiler::ReplaceHash(uint32_t old_hash, uint32_t new_hash)
 					++i;
 				}
 			}
-				break;
-			case OpFieldType::Reg:
-				ip += sizeof(uint8_t);
-				break;
-			case OpFieldType::Double:
-				ip += sizeof(double);
-				break;
-			case OpFieldType::Float:
-				ip += sizeof(float);
-				break;
-			case OpFieldType::Int:
-				ip += sizeof(int);
-				break;
-			case OpFieldType::Bool:
-				ip += sizeof(bool);
-				break;
-			default:
-				throw std::runtime_error("Unknown type!");
+			else
+			{
+				AdvancePtr(type, ip);
 			}
 		}
+	}
+}
+
+void Decompiler::AdvancePtr(const OpFieldType& type, int& ip) const
+{
+	switch (type)
+	{
+	case OpFieldType::OpType:
+		ip += sizeof(uint8_t);
+		break;
+	case OpFieldType::Reg:
+		ip += sizeof(uint8_t);
+		break;
+	case OpFieldType::Double:
+		ip += sizeof(double);
+		break;
+	case OpFieldType::Float:
+		ip += sizeof(float);
+		break;
+	case OpFieldType::Int:
+		ip += sizeof(int);
+		break;
+	case OpFieldType::Bool:
+		ip += sizeof(bool);
+		break;
+	case OpFieldType::String:
+	{
+		auto& codes = m_codes->GetCode();
+		uint16_t len = ReadData<uint16_t>(codes, ip);
+		ip += sizeof(uint16_t) + len;
+	}
+		break;
+	default:
+		throw std::runtime_error("Unknown type!");
 	}
 }
 
