@@ -116,14 +116,14 @@ void Compiler::PrintBlock(const std::shared_ptr<Block>& b, int level)
     };
 
     print_header();
-    printf("%s begin %d\n", b->name.c_str(), b->begin);
+    printf("%s <<< %d\n", b->name.c_str(), b->begin);
 
     for (auto& child : b->children) {
         PrintBlock(child, level + 1);
     }
 
     print_header();
-    printf("%s end %d\n", b->name.c_str(), b->end);
+    printf("%s >>> %d\n", b->name.c_str(), b->end);
 }
 
 }
