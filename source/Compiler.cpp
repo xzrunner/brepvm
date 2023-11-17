@@ -60,8 +60,7 @@ void Compiler::PushBlock(const std::string& name, size_t pos)
 
     if (m_block_path.empty())
     {
-        assert(!m_root_block);
-        m_root_block = block;
+        m_block_roots.push_back(block);
     }
     else
     {
@@ -83,7 +82,9 @@ void Compiler::PopBlock(size_t pos)
 
 void Compiler::PrintBlockTree()
 {
-    PrintBlock(m_root_block, 0);
+    for (auto root : m_block_roots) {
+        PrintBlock(root, 0);
+    }
 }
 
 void Compiler::PrintBlock(const std::shared_ptr<Block>& b, int level)

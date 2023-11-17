@@ -50,7 +50,7 @@ private:
 private:
 	std::array<Register, REGISTER_COUNT> m_registers;
 
-	std::shared_ptr<Block> m_root_block = nullptr;
+	std::vector<std::shared_ptr<Block>> m_block_roots;
 	std::stack<std::shared_ptr<Block>> m_block_path;
 
 	bool m_precomp_cond_branch = false;
