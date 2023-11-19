@@ -58,6 +58,9 @@
     <ClCompile Include="..\..\..\source\DelComments.cpp">
       <Filter>optimize</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\source\FlowGraph.cpp">
+      <Filter>optimize</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\source\Profiler.cpp">
       <Filter>nodes</Filter>
     </ClCompile>
@@ -107,6 +110,9 @@
     </ClInclude>
     <ClInclude Include="..\..\..\include\brepvm\VM.h" />
     <ClInclude Include="..\..\..\include\brepvm\DelComments.h">
+      <Filter>optimize</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\brepvm\FlowGraph.h">
       <Filter>optimize</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\include\brepvm\Profiler.h">

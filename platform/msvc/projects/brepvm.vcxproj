@@ -23,6 +23,7 @@
     <ClCompile Include="..\..\..\source\CodesBuilder.cpp" />
     <ClCompile Include="..\..\..\source\Compiler.cpp" />
     <ClCompile Include="..\..\..\source\Decompiler.cpp" />
+    <ClCompile Include="..\..\..\source\FlowGraph.cpp" />
     <ClCompile Include="..\..\..\source\geo_opcodes.cpp" />
     <ClCompile Include="..\..\..\source\math_opcodes.cpp" />
     <ClCompile Include="..\..\..\source\OpFieldMap.cpp" />
@@ -40,6 +41,7 @@
     <ClInclude Include="..\..\..\include\brepvm\CodesBuilder.h" />
     <ClInclude Include="..\..\..\include\brepvm\Compiler.h" />
     <ClInclude Include="..\..\..\include\brepvm\Decompiler.h" />
+    <ClInclude Include="..\..\..\include\brepvm\FlowGraph.h" />
     <ClInclude Include="..\..\..\include\brepvm\geo_opcodes.h" />
     <ClInclude Include="..\..\..\include\brepvm\math_opcodes.h" />
     <ClInclude Include="..\..\..\include\brepvm\OpFieldMap.h" />

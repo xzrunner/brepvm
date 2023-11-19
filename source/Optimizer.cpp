@@ -4,6 +4,7 @@
 #include "brepvm/VM.h"
 #include "brepvm/geo_opcodes.h"
 #include "brepvm/Decompiler.h"
+#include "brepvm/FlowGraph.h"
 #include "brepvm/Profiler.h"
 
 #include <easyvm/VM.h>
@@ -26,6 +27,8 @@ Optimizer::Optimizer(const std::shared_ptr<Bytecodes>& old_codes)
 
 void Optimizer::Optimize(const std::shared_ptr<Profiler>& profiler)
 {
+    FlowGraph fg(m_old_codes);
+
     CacheBlocks(profiler);
 }
 

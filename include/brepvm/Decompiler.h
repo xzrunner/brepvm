@@ -32,6 +32,8 @@ public:
 
 	size_t CalcOpSize(int ip) const;
 
+	static bool IsJumpOp(int opcode);
+
 private:
 	void AdvancePtr(const OpFieldType& type, int& ip) const;
 

@@ -41,13 +41,6 @@ inline void hash_combine(uint32_t& seed, const T& v)
 	seed ^= hasher(v) + 0x9e3779b9 + (seed << 6) + (seed >> 2);
 }
 
-bool is_jump_op(int opcode)
-{
-	return opcode == evm::OP_JUMP
-		|| opcode == evm::OP_JUMP_IF
-		|| opcode == evm::OP_JUMP_IF_NOT;
-}
-
 }
 
 namespace brepvm
@@ -239,7 +232,7 @@ uint32_t Decompiler::Hash(int begin, int end)
 				hash_combine(hash, type);
 				ip += sizeof(uint8_t);
 
-				if (is_jump_op(type))
+				if (IsJumpOp(type))
 				{
 					assert((*fields)[i + 1] == OpFieldType::Int);
 					int offset = ReadData<int>(codes, ip);
@@ -340,7 +333,7 @@ void Decompiler::JumpLabelEncode()
 				int type = codes[ip];
 				ip += sizeof(uint8_t);
 
-				if (is_jump_op(type))
+				if (IsJumpOp(type))
 				{
 					assert((*fields)[i + 1] == OpFieldType::Int);
 					int pos = ReadData<int>(codes, ip);
@@ -443,7 +436,7 @@ void Decompiler::JumpLabelDecode()
 				int type = codes[ip];
 				ip += sizeof(uint8_t);
 
-				if (is_jump_op(type))
+				if (IsJumpOp(type))
 				{
 					assert((*fields)[i + 1] == OpFieldType::Int);
 					int lbl = ReadData<int>(codes, ip);
@@ -500,7 +493,7 @@ void Decompiler::JumpLabelRelocate(const std::vector<CodeBlock>& rm_blocks)
 				int type = codes[ip];
 				ip += sizeof(uint8_t);
 
-				if (is_jump_op(type))
+				if (IsJumpOp(type))
 				{
 					assert((*fields)[i + 1] == OpFieldType::Int);
 					int old_pos = ReadData<int>(codes, ip);
@@ -604,6 +597,13 @@ size_t Decompiler::CalcOpSize(int ip) const
 	}
 
 	return ip - begin;
+}
+
+bool Decompiler::IsJumpOp(int opcode)
+{
+	return opcode == evm::OP_JUMP
+		|| opcode == evm::OP_JUMP_IF
+		|| opcode == evm::OP_JUMP_IF_NOT;
 }
 
 void Decompiler::AdvancePtr(const OpFieldType& type, int& ip) const
