@@ -4,6 +4,7 @@
 #include "brepvm/VM.h"
 #include "brepvm/geo_opcodes.h"
 #include "brepvm/Decompiler.h"
+#include "brepvm/Profiler.h"
 
 #include <easyvm/VM.h>
 
@@ -23,15 +24,37 @@ Optimizer::Optimizer(const std::shared_ptr<Bytecodes>& old_codes)
 {
 }
 
-void Optimizer::Optimize()
+void Optimizer::Optimize(const std::shared_ptr<Profiler>& profiler)
 {
-    CacheBlocks();
+    CacheBlocks(profiler);
 }
 
 std::vector<std::vector<CodeBlock>> 
-Optimizer::CalcCacheBlocks() const
+Optimizer::CalcCacheBlocks(const std::shared_ptr<Profiler>& profiler) const
 {
-    auto& _blocks = m_old_codes->GetCodeBlocks();
+    std::map<size_t, std::vector<CodeBlock>> _blocks;
+    if (profiler)
+    {
+        Decompiler dc(m_old_codes, VM::Instance()->GetOpFields());
+
+        auto src_blocks = profiler->QueryCodeBlocks("Boolean");    
+        for (auto& src : src_blocks)
+        {
+            CodeBlock dst;
+            dst.hash  = dc.Hash(src.begin, src.end);
+            dst.begin = src.begin;
+            dst.end   = src.end;
+            dst.reg   = src.reg;
+            dst.times = 1;
+
+            auto itr = _blocks.find(dst.hash);
+            if (itr == _blocks.end()) {
+                _blocks.insert({ dst.hash, { dst } });
+            } else {
+                itr->second.push_back(dst);
+            }
+        }
+    }
 
     std::vector<std::vector<CodeBlock>> blocks;
     for (auto& bs : _blocks) 
@@ -144,10 +167,12 @@ Optimizer::CalcRemoveBlocks(const std::vector<std::vector<CodeBlock>>& cache_blo
     return rm_blocks;
 }
 
-void Optimizer::CacheBlocks() const
+void Optimizer::CacheBlocks(const std::shared_ptr<Profiler>& profiler) const
 {
-    auto blocks = CalcCacheBlocks();
-    if (blocks.empty()) {
+    auto blocks = CalcCacheBlocks(profiler);
+    if (blocks.empty()) 
+    {
+        m_new_codes = m_old_codes;
         return;
     }
 

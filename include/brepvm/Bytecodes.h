@@ -19,10 +19,6 @@ public:
 	// rewrite
 	void WriteNum(int pos, float num);
 
-	// stat
-	void AddOptimBlock(size_t hash, int begin, int end, int reg);
-	auto& GetCodeBlocks() const { return m_blocks; }
-
 	auto& GetCode() const { return m_code; }
 	void SetCode(const std::vector<uint8_t>& code) { m_code = code; }
 
@@ -42,9 +38,6 @@ private:
 	int m_ret_reg = -1;
 
 	int m_curr_pos = -1;
-
-	// statistics
-	std::map<size_t, std::vector<CodeBlock>> m_blocks;
 
 	// optimize
 	std::map<std::string, int> m_stat_call;

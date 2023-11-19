@@ -16,7 +16,7 @@ struct CodeBlock
 
 	int times = 0;
 
-	int group;
+	int group = 0;
 
 	bool dirty = false;
 };

@@ -27,27 +27,6 @@ void Bytecodes::WriteNum(int pos, float num)
 	SetCurrPos(-1);
 }
 
-void Bytecodes::AddOptimBlock(size_t hash, int begin, int end, int reg)
-{
-	CodeBlock b;
-	b.hash = hash;
-	b.begin = begin;
-	b.end = end;
-	b.reg = reg;
-	b.times = 1;
-
-	auto itr = m_blocks.find(hash);
-	if (itr == m_blocks.end())
-	{
-		m_blocks.insert({ hash, { b } });
-	}
-	else
-	{
-		assert(begin - end == itr->second.front().begin - itr->second.front().end);
-		itr->second.push_back(b);
-	}
-}
-
 void Bytecodes::StatCall(const std::string& name)
 {
 	auto itr = m_stat_call.find(name);
