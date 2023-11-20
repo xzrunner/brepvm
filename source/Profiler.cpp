@@ -78,6 +78,16 @@ Profiler::QueryCodeBlocks(const std::string& name) const
     return blocks;
 }
 
+void Profiler::StatCall(const std::string& name)
+{
+    auto itr = m_stat_call.find(name);
+    if (itr == m_stat_call.end()) {
+        m_stat_call.insert({ name, 1 });
+    } else {
+        ++itr->second;
+    }
+}
+
 void Profiler::PrintBlock(const std::shared_ptr<Block>& b, int level)
 {
     if (!b || b->begin == b->end) {

@@ -4,6 +4,7 @@
 #include <memory>
 #include <string>
 #include <stack>
+#include <map>
 
 namespace brepvm
 {
@@ -27,6 +28,11 @@ public:
 	};
 	std::vector<CodeBlock> QueryCodeBlocks(const std::string& name) const;
 
+	// statistics
+	void StatCall(const std::string& name);
+	void AddCost(int cost) { m_cost += cost; }
+	int GetCost() const { return m_cost; }
+
 private:
 	struct Block
 	{
@@ -46,6 +52,10 @@ private:
 private:
 	std::vector<std::shared_ptr<Block>> m_block_roots;
 	std::stack<std::shared_ptr<Block>> m_block_path;
+
+	// statistics
+	std::map<std::string, int> m_stat_call;
+	int m_cost = 0;
 
 }; // Profiler
 

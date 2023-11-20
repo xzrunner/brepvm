@@ -6,6 +6,7 @@
 #include <easyvm/OpCodes.h>
 
 #include <vector>
+#include <iterator>
 
 namespace brepvm
 {

@@ -1,6 +1,6 @@
 #include "brepvm/Bytecodes.h"
 
-#include <assert.h>
+#include <iterator>
 
 namespace brepvm
 {
@@ -25,16 +25,6 @@ void Bytecodes::WriteNum(int pos, float num)
 	SetCurrPos(pos);
 	Write(reinterpret_cast<const char*>(&num), sizeof(float));
 	SetCurrPos(-1);
-}
-
-void Bytecodes::StatCall(const std::string& name)
-{
-	auto itr = m_stat_call.find(name);
-	if (itr == m_stat_call.end()) {
-		m_stat_call.insert({ name, 1 });
-	} else {
-		++itr->second;
-	}
 }
 
 }

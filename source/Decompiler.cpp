@@ -10,6 +10,8 @@
 #include <stdexcept>
 #include <map>
 #include <algorithm>
+#include <iterator>
+
 #include <assert.h>
 
 namespace
