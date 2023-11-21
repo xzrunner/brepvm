@@ -15,6 +15,8 @@ public:
 
 	void Update();
 
+	const evm::Value* Fetch(size_t idx) const;
+
 private:
 	struct Item
 	{

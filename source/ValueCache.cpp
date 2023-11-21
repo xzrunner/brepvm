@@ -53,4 +53,23 @@ void ValueCache::Update()
     }
 }
 
+const evm::Value* ValueCache::Fetch(size_t idx) const
+{
+    if (m_cache.empty()) {
+        return nullptr;
+    }
+
+    idx = idx % m_cache.size();
+    
+    if (idx < 0 || idx >= m_cache.size()) {
+        return nullptr;
+    } else {
+        auto itr = m_cache.begin();
+        for (int i = 0; i < idx; ++i) {
+            ++itr;
+        }
+        return &itr->second.val;
+    }
+}
+
 }

@@ -1,5 +1,6 @@
 #include "brepvm/VMHelper.h"
 #include "brepvm/ValueType.h"
+#include "brepvm/VM.h"
 
 #include <easyvm/VM.h>
 #include <easyvm/VMHelper.h>
@@ -90,6 +91,20 @@ VMHelper::LoadPolys(evm::VM* vm, uint8_t reg)
     std::vector<std::shared_ptr<pm3::Polytope>> dst;
 	load_polys(dst, vm->GetRegister(reg));
     return dst;
+}
+
+std::vector<std::shared_ptr<pm3::Polytope>> 
+VMHelper::LoadPolysFromCache(uint8_t idx)
+{
+	std::vector<std::shared_ptr<pm3::Polytope>> dst;
+
+	auto cache = VM::Instance()->GetCache();
+	auto val = cache->Fetch(idx);
+	if (val) {
+		load_polys(dst, *val);
+	}
+
+	return dst;
 }
 
 std::shared_ptr<std::vector<evm::Value>> 
