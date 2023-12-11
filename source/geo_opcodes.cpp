@@ -272,7 +272,8 @@ void GeoOpCodeImpl::PolytopeSubtract(evm::VM* vm)
 
 	auto tool = brepvm::VMHelper::LoadPolys(vm, r_tool);
 
-	auto polys = pm3::PolytopeAlgos::Subtract(base, tool);
+	std::vector<std::pair<pm3::PolytopePtr, pm3::PolytopePtr>> hist;
+	auto polys = pm3::PolytopeAlgos::Subtract(base, tool, hist);
 	VMHelper::StorePolys(vm, r_dst, polys);
 }
 
