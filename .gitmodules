@@ -1,0 +1,12 @@
+[submodule "external/easyvm"]
+	path = external/easyvm
+	url = git@github.com:xzrunner/easyvm.git
+[submodule "external/sm"]
+	path = external/sm
+	url = git@github.com:xzrunner/sm.git
+[submodule "external/polymesh3"]
+	path = external/polymesh3
+	url = git@github.com:xzrunner/polymesh3.git
+[submodule "external/halfedge"]
+	path = external/halfedge
+	url = git@github.com:xzrunner/halfedge.git
