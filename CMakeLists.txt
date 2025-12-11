@@ -80,10 +80,6 @@ set(ALL_FILES
 # Target
 ################################################################################
 
-include_directories(${CMAKE_SOURCE_DIR}/include)
-include_directories(${CMAKE_SOURCE_DIR}/external/easyvm/include)
-include_directories(${CMAKE_SOURCE_DIR}/external/sm)
-include_directories(${CMAKE_SOURCE_DIR}/external/polymesh3/include)
-include_directories(${CMAKE_SOURCE_DIR}/external/halfedge/include)
-
 add_library(${PROJECT_NAME} STATIC ${ALL_FILES})
+
+target_include_directories(${PROJECT_NAME} PRIVATE include external/easyvm/include external/sm external/polymesh3/include external/halfedge/include)
